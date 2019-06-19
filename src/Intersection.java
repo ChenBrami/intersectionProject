@@ -3,11 +3,11 @@ import java.util.Queue;
 
 public class Intersection {
     private int t;
-    //order of lights is according to this: north -> west -> south -> east
+    //order of lights is according to this: north -> east -> south -> west
     private Headlight north;
-    private Headlight west;
-    private Headlight south;
     private Headlight east;
+    private Headlight south;
+    private Headlight west;
     private Queue<Headlight> headLightsQueue;
     private Headlight currLightOn;
 
@@ -18,22 +18,24 @@ public class Intersection {
         west = new Headlight();
         south = new Headlight();
         headLightsQueue = new LinkedList();
+
         //currLightOn = NULL;
     }
 
     public void checkSensors(){
         if (north.getSensor() & !headLightsQueue.contains(north))
             headLightsQueue.add(north);
-        if (west.getSensor() & !headLightsQueue.contains(west))
-            headLightsQueue.add(west);
+        if (west.getSensor() & !headLightsQueue.contains(east))
+            headLightsQueue.add(east);
         if (south.getSensor() & !headLightsQueue.contains(south))
             headLightsQueue.add(south);
-        if (east.getSensor() & !headLightsQueue.contains(east))
-            headLightsQueue.add(east);
+        if (east.getSensor() & !headLightsQueue.contains(west))
+            headLightsQueue.add(west);
     }
 
     public void operateLights(){
-        while (!headLightsQueue.isEmpty()){
+        t=t+1;
+        if (!headLightsQueue.isEmpty()){
             if (OneOfTheLightsIsOn()){
                 //if there has been 10 t's since the light is on than... wait until it turns of
                 currLightOn.turnOffLight();
@@ -54,4 +56,9 @@ public class Intersection {
             retVal = true;
         return retVal;
     }
+
+    public int getT(){
+        return t;
+    }
+
 }

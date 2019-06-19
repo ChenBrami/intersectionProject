@@ -1,15 +1,12 @@
-import java.util.LinkedList;
-import java.util.Queue;
-
 public class Headlight {
-    private static HeadlightColor currColor;
-    private static boolean sensor;
-    private static Queue<HeadlightColor> cars;
+    private HeadlightColor currColor;
+    private boolean sensor;
+    private int cars;
 
     public void Headlight(){
         currColor = new HeadlightColor();
         sensor = false;
-        cars = new LinkedList();
+        cars = 0;
     }
 
     public void turnOffLight(){
@@ -21,7 +18,7 @@ public class Headlight {
     }
 
     public void checkSensor(){
-        if (cars.isEmpty())
+        if (cars == 0)
             sensor = false;
         else
             sensor = true;

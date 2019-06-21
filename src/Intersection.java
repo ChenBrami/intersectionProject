@@ -10,55 +10,118 @@ public class Intersection {
     private Headlight west;
     private Queue<Headlight> headLightsQueue;
     private Headlight currLightOn;
+    private int countTimeUnits;
 
-    public void Intersection(){
+    public Intersection(){
         t = 0;
         east = new Headlight();
         north = new Headlight();
         west = new Headlight();
         south = new Headlight();
         headLightsQueue = new LinkedList();
-
-        //currLightOn = NULL;
+        countTimeUnits = 0;
     }
 
     public void checkSensors(){
-        if (north.getSensor() & !headLightsQueue.contains(north))
+        east.checkSensor();
+        north.checkSensor();
+        west.checkSensor();
+        south.checkSensor();
+        if (north.getSensor() & !headLightsQueue.contains(north) & currLightOn != north)
             headLightsQueue.add(north);
-        if (west.getSensor() & !headLightsQueue.contains(east))
+        if (east.getSensor() & !headLightsQueue.contains(east) & currLightOn != east)
             headLightsQueue.add(east);
-        if (south.getSensor() & !headLightsQueue.contains(south))
+        if (south.getSensor() & !headLightsQueue.contains(south) & currLightOn != south)
             headLightsQueue.add(south);
-        if (east.getSensor() & !headLightsQueue.contains(west))
+        if (west.getSensor() & !headLightsQueue.contains(west) & currLightOn != west)
             headLightsQueue.add(west);
     }
 
     public void operateLights(){
+        /**
+         It will start by adding 1 to the time unit.
+         Check and update the sensors of each of the headlights.
+         And update the next stage that the headlights should be in.
+         **/
         t=t+1;
-        if (!headLightsQueue.isEmpty()){
-            if (OneOfTheLightsIsOn()){
-                //if there has been 10 t's since the light is on than... wait until it turns of
-                currLightOn.turnOffLight();
-                headLightsQueue.add(currLightOn);
-                currLightOn = headLightsQueue.poll();
+        checkSensors();
+        updateHeadlights();
+
+        //If none of the lights is waiting to be turned on - that is if no sensor recognizes a car.
+        if (headLightsQueue.isEmpty()) {
+            //if one of the lights is on and it's sensor is off
+            if (OneOfTheLightsIsOn() && !currLightOn.getSensor()) {
+                    currLightOn.turnOffLight();
             }
-            else{
+        }
+        //If there's a light in the queue
+        else {
+            //If one of the lights *IS NOT* red
+            if (!OneOfTheLightsIsOn()){
                 currLightOn = headLightsQueue.poll();
                 currLightOn.turnOnLight();
             }
-
+            //If all of the lights are currently red.
+            else {
+                if(currLightOn.getSensor()){
+                    if (countTimeUnits<10){
+                        countTimeUnits++;
+                    }
+                    else {
+                        currLightOn.turnOffLight();
+                        if (currLightOn.getColor().equals("YELLOW")){
+                            countTimeUnits=0;
+                            return;
+                        }
+                        else{
+                            countTimeUnits++;
+                            return;
+                        }
+                    }
+                }
+                else{
+                    currLightOn.turnOffLight();
+                    return;
+                }
+            }
         }
     }
 
     public boolean OneOfTheLightsIsOn(){
         boolean retVal=false;
-        if (east.getColor()!="RED" | north.getColor()!="RED" | west.getColor()!="RED" | south.getColor()!="RED")
+        if (!east.getColor().equals("RED") | !north.getColor().equals("RED") | !west.getColor().equals("RED") | !south.getColor().equals("RED"))
             retVal = true;
         return retVal;
     }
-
+/**
     public int getT(){
         return t;
     }
+**/
+    public void addCar(Headlight direction){
+        direction.addCar();
+    }
 
+    public Headlight getEast() {
+        return east;
+    }
+
+    public Headlight getNorth() {
+        return north;
+    }
+
+    public Headlight getSouth() {
+        return south;
+    }
+
+    public Headlight getWest() {
+        return west;
+    }
+
+    public void updateHeadlights(){
+        east.update();
+        west.update();
+        north.update();
+        south.update();
+    }
 }

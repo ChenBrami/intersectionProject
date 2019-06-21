@@ -4,7 +4,7 @@ public class HeadlightColor  {
     private boolean currChangeOff;
     private int blinkCount;
 
-    public void HeadlightColor(){
+    public HeadlightColor(){
         color = "RED";
         currChangeOn = false;
         currChangeOff = false;
@@ -14,29 +14,34 @@ public class HeadlightColor  {
     public void turnOffLight(){
         currChangeOff = true;
         currChangeOn = false;
+        //update();
     }
 
     public void update(){
         if (currChangeOn){
-            if (color == "RED")
+            if (color.equals("RED"))
                 color = "YELLOW + GREEN";
-            else if (color == "YELLOW + GREEN")
+            else if (color.equals("YELLOW + GREEN")) {
                 color = "GREEN";
+                currChangeOn = false;
+            }
         }
         else if (currChangeOff){
-            if (color == "GREEN") {
+            if (color.equals("GREEN")) {
                 color = "BLINKING GREEN";
                 blinkCount = blinkCount + 1;
             }
-            else if (color == "BLINKING GREEN" & blinkCount<2){
+            else if (color.equals("BLINKING GREEN") & blinkCount<2){
                 blinkCount = blinkCount + 1;
             }
-            else if (color == "BLINKING GREEN" & blinkCount==2){
+            else if (color.equals("BLINKING GREEN") & blinkCount==2){
                 color = "YELLOW";
                 blinkCount = 0;
             }
-            else if (color == "YELLOW")
+            else if (color.equals("YELLOW")) {
                 color = "RED";
+                currChangeOff = false;
+            }
         }
 
     }
@@ -44,8 +49,7 @@ public class HeadlightColor  {
     public void turnOnLight(){
         currChangeOn = true;
         currChangeOff = false;
-        color = "YELLOW + GREEN";
-        color = "GREEN";
+        //update();
     }
 
     public String getColor(){

@@ -42,6 +42,11 @@ public class Headlight {
         return cars;
     }
 
+    /**
+     The update function will initiate the HeadlightColor update, and will update the cars as they pass the intersection.
+     Every car takes two time units to go through the intersection, hence the timeUnitsForCars variable.
+    **/
+
     public void update(){
         currColor.update();
         if (currColor.getColor().equals("GREEN")){

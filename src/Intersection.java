@@ -56,19 +56,25 @@ public class Intersection {
         }
         //If there's a light in the queue
         else {
-            //If one of the lights *IS NOT* red
+            //If all of the lights are currently red.
             if (!OneOfTheLightsIsOn()){
                 currLightOn = headLightsQueue.poll();
                 currLightOn.turnOnLight();
             }
-            //If all of the lights are currently red.
+            //If one of the lights *IS NOT* red
             else {
+                //If the light that is currently on has its sensor "ON" - that means there is another car waiting in line
                 if(currLightOn.getSensor()){
+                    /**
+                     To prevent cars from waiting infinitely for the light to go on, if there's a car waiting on the other light and the current
+                    light has been on for over 10 time units, it will turn off and be added to the lights queue again.
+                     **/
                     if (countTimeUnits<10){
                         countTimeUnits++;
                     }
                     else {
                         currLightOn.turnOffLight();
+                        //To allow counting the time units for every light again- once the light turns yellow the count will reset.
                         if (currLightOn.getColor().equals("YELLOW")){
                             countTimeUnits=0;
                             return;
@@ -79,6 +85,7 @@ public class Intersection {
                         }
                     }
                 }
+                //If the light that is currently on has its sensor "OFF" - that means there are no other cars waiting in line.
                 else{
                     currLightOn.turnOffLight();
                     return;
@@ -93,11 +100,13 @@ public class Intersection {
             retVal = true;
         return retVal;
     }
+
 /**
     public int getT(){
         return t;
     }
 **/
+
     public void addCar(Headlight direction){
         direction.addCar();
     }
